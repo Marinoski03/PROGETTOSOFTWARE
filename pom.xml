@@ -1,32 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.mycompany</groupId>
-<<<<<<< HEAD
-    <artifactId>Progetto_IS</artifactId>
-=======
-<<<<<<< HEAD
-    <artifactId>IS_Project</artifactId>
->>>>>>> 03fb597ebb5d809a53deac8c4e3e8c9378195be7
+    <artifactId>Progetto_IS</artifactId> <!-- O usa IS_Project se è quello giusto -->
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
-<<<<<<< HEAD
-        <exec.mainClass>com.mycompany.progetto_is.Progetto_IS</exec.mainClass>
-=======
-        <exec.mainClass>com.mycompany.is_project.IS_Project</exec.mainClass>
-=======
-    <artifactId>mavenproject</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>23</maven.compiler.release>
-        <exec.mainClass>com.mycompany.mavenproject.Mavenproject</exec.mainClass>
->>>>>>> origin/master
->>>>>>> 03fb597ebb5d809a53deac8c4e3e8c9378195be7
+        <exec.mainClass>com.mycompany.progetto_is.Progetto_IS</exec.mainClass> <!-- Cambia con la classe corretta -->
     </properties>
+
 </project>
