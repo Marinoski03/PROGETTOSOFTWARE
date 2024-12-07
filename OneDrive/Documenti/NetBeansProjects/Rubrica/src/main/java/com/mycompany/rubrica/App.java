@@ -9,11 +9,15 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * JavaFX App
+ * La classe {@code App} estende {@link Application} e rappresenta l'applicazione JavaFX.
+ * Gestisce la creazione della finestra principale dell'applicazione e il caricamento
+ * delle scene tramite il framework FXML.
  */
 public class App extends Application {
 
     private static Scene scene;
+    
+    //La scena principale dell'applicazione
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -35,4 +39,4 @@ public class App extends Application {
         launch();
     }
 
-}//jncewjnjcnnc
+}
