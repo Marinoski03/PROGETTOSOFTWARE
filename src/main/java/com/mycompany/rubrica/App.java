@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 /**
- * La classe {@code App} estende {\link Application} e rappresenta l'applicazione JavaFX.
+ * La classe {@code App} estende {@link javafx.application.Application} e rappresenta l'applicazione JavaFX.
  * Gestisce la creazione della finestra principale dell'applicazione e il caricamento
  * delle scene tramite il framework FXML.
  */
