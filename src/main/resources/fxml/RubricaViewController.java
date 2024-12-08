@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
 /**
  * FXML Controller class
  *
@@ -22,7 +23,9 @@ public class RubricaViewController implements Initializable {
 
 
     @FXML
-    private Button bottone;
+    private GridPane pane;
+    @FXML
+    private Button button;
     /**
      * Initializes the controller class.
      */
