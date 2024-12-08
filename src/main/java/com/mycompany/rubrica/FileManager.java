@@ -21,7 +21,7 @@ public class FileManager {
      * Il comportamento esatto (ad esempio, formato del file, encoding, ecc.) 
      * dipende dall'implementazione che verrà fornita.
      * 
-     * @param filename il nome del file su cui salvare i dati (come il metodo della libreria javafx "javafx.beans.property.StringProperty")
+     * @param filename il nome del file su cui salvare i dati (come { @link javafx.beans.property.StringProperty })
      */
     public void salvaSuFile(StringProperty filename) {
         // Implementazione per salvare il contatto su un file
@@ -32,7 +32,7 @@ public class FileManager {
      * Il comportamento esatto (ad esempio, formato del file, parsing, ecc.) 
      * dipende dall'implementazione che verrà fornita.
      * 
-     * @param filename il nome del file da cui caricare i dati (come il metodo della libreria javafx "javafx.beans.property.StringProperty")
+     * @param filename il nome del file da cui caricare i dati (come { @link javafx.beans.property.StringProperty })
      * @return il contatto caricato dal file
      */
     public Contatto caricaDaFile(StringProperty filename) {

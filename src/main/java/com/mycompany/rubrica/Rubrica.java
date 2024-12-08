@@ -9,71 +9,63 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * La classe {@code Rubrica} gestisce una raccolta di contatti, permettendo di
- * aggiungere, modificare, eliminare e cercare contatti all'interno di una rubrica.
- * I contatti sono memorizzati in un insieme ordinato (TreeSet), che garantisce
- * che i contatti siano unici e ordinati in base all'implementazione dell'interfaccia
- * {@link Comparable} nella classe {@link Contatto}.
+ * Classe che rappresenta una rubrica, che contiene una lista di contatti.
+ * La rubrica consente di aggiungere, modificare, eliminare e cercare contatti,
+ * nonché di ottenere la lista ordinata dei contatti.
  * 
  * @author obbiv
  */
 public class Rubrica {
 
-    // Collezione di contatti ordinata per nome e cognome (tramite TreeSet)
+    // Lista dei contatti nella rubrica
     private ObservableList<Contatto> contatti;
-    
+
     /**
-     * Costruttore che inizializza la rubrica come una collezione vuota di contatti.
+     * Costruttore della classe Rubrica.
+     * Inizializza una rubrica vuota con una lista di contatti vuota.
      */
     public Rubrica(){
-        contatti = FXCollections.observableArrayList();  // Inizializza il TreeSet per mantenere i contatti ordinati
+        contatti = FXCollections.observableArrayList();  
     }
-    
+
     /**
-     * Aggiunge un nuovo contatto alla rubrica.
-     * Se il contatto esiste già, non verrà aggiunto (TreeSet non permette duplicati).
+     * Aggiunge un contatto alla rubrica e ordina i contatti per cognome e nome.
      * 
-     * @param c il contatto da aggiungere alla rubrica
+     * @param c Il contatto da aggiungere alla rubrica.
      */
     public void aggiungiContatto(Contatto c){
-        contatti.add(c);  // Aggiunge il contatto al TreeSet
+        contatti.add(c); 
         ordinaContatti();
     }
-    
+
     /**
-     * Modifica un contatto esistente nella rubrica.
-     * La logica di modifica dipende dall'implementazione specifica,
-     * ma generalmente consiste nel rimuovere il contatto e aggiungerlo nuovamente
-     * con i dati modificati.
+     * Modifica un contatto nella rubrica.
+     * Questo metodo è attualmente non implementato, ma può essere usato per aggiornare
+     * le informazioni di un contatto esistente.
      * 
-     * @param c il contatto da modificare
+     * @param c Il contatto da modificare.
      */
     public void modificaContatto(Contatto c){
-        // Implementazione per modificare il contatto nella rubrica
+        // Implementazione per modificare il contatto nella rubrica (non ancora implementato)
     }
-    
+
     /**
      * Elimina un contatto dalla rubrica.
-     * Se il contatto non esiste, non verrà fatto nulla.
      * 
-     * @param c il contatto da eliminare
+     * @param c Il contatto da eliminare dalla rubrica.
      */
     public void eliminaContatto(Contatto c){
-        // Implementazione per eliminare il contatto dalla rubrica
         contatti.remove(c);
     }
-    
+
     /**
-     * Cerca i contatti che corrispondono alla stringa di ricerca fornita.
-     * Restituisce una lista di contatti che contengono il termine di ricerca
-     * nel nome, cognome o nei numeri di telefono o email (la ricerca può essere
-     * implementata in modo più sofisticato).
+     * Cerca i contatti nella rubrica che hanno un nome o cognome che inizia con la stringa
+     * di ricerca fornita, ignorando la distinzione tra maiuscole e minuscole.
      * 
-     * @param s la stringa da cercare (può essere una parte del nome o cognome)
-     * @return una lista osservabile di contatti che corrispondono alla ricerca
+     * @param s La stringa di ricerca, che può essere parte del nome o cognome.
+     * @return Una lista di contatti che corrispondono alla ricerca.
      */
     public ObservableList<Contatto> cercaContatto(String s){
-        
         ObservableList<Contatto> results = FXCollections.observableArrayList();
         for (Contatto contatto : contatti){
             if (contatto.getNome().toLowerCase().startsWith(s.toLowerCase()) ||
@@ -82,10 +74,13 @@ public class Rubrica {
             }
         }
         return results;
-        
     }
-    
-       private void ordinaContatti(){
+
+    /**
+     * Ordina i contatti nella rubrica prima per cognome e poi per nome, in ordine alfabetico,
+     * ignorando la distinzione tra maiuscole e minuscole.
+     */
+    private void ordinaContatti(){
         contatti.sort((c1, c2) -> {
             int cognomeComp = c1.getCognome().compareToIgnoreCase(c2.getCognome());
             if (cognomeComp != 0) {
@@ -94,11 +89,13 @@ public class Rubrica {
             return c1.getNome().compareToIgnoreCase(c2.getNome());
         });
     }
-       
-       public ObservableList<Contatto> getContatti(){
-           
-           return contatti;
-           
-       }
-       
+
+    /**
+     * Restituisce la lista dei contatti presenti nella rubrica.
+     * 
+     * @return Una lista osservabile dei contatti nella rubrica.
+     */
+    public ObservableList<Contatto> getContatti(){
+        return contatti;
+    }
 }
