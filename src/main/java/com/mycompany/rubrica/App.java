@@ -26,7 +26,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException { 
-        scene = new Scene(loadFXML("primary"), 640, 480); // Crea una scena a partire dal file FXML "primary.fxml"
+        scene = new Scene(loadFXML("RubricaView"), 640, 480); // Crea una scena a partire dal file FXML "primary.fxml"
         stage.setScene(scene); // Imposta la scena sullo stage
         stage.show(); // Mostra la finestra
     }
