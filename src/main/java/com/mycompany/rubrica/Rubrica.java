@@ -5,6 +5,7 @@
 package com.mycompany.rubrica;
 
 import java.util.TreeSet;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
@@ -19,13 +20,13 @@ import javafx.collections.ObservableList;
 public class Rubrica {
 
     // Collezione di contatti ordinata per nome e cognome (tramite TreeSet)
-    private TreeSet<Contatto> contatti;
+    private ObservableList<Contatto> contatti;
     
     /**
      * Costruttore che inizializza la rubrica come una collezione vuota di contatti.
      */
     public Rubrica(){
-        contatti = new TreeSet<>();  // Inizializza il TreeSet per mantenere i contatti ordinati
+        contatti = FXCollections.observableArrayList();  // Inizializza il TreeSet per mantenere i contatti ordinati
     }
     
     /**
@@ -36,6 +37,7 @@ public class Rubrica {
      */
     public void aggiungiContatto(Contatto c){
         contatti.add(c);  // Aggiunge il contatto al TreeSet
+        ordinaContatti();
     }
     
     /**
@@ -58,6 +60,7 @@ public class Rubrica {
      */
     public void eliminaContatto(Contatto c){
         // Implementazione per eliminare il contatto dalla rubrica
+        contatti.remove(c);
     }
     
     /**
@@ -70,7 +73,32 @@ public class Rubrica {
      * @return una lista osservabile di contatti che corrispondono alla ricerca
      */
     public ObservableList<Contatto> cercaContatto(String s){
-        // Implementazione della ricerca dei contatti
-        return null;  // Placeholder, da implementare
+        
+        ObservableList<Contatto> results = FXCollections.observableArrayList();
+        for (Contatto contatto : contatti){
+            if (contatto.getNome().toLowerCase().startsWith(s.toLowerCase()) ||
+                contatto.getCognome().toLowerCase().startsWith(s.toLowerCase())) {
+                results.add(contatto);
+            }
+        }
+        return results;
+        
     }
+    
+       private void ordinaContatti(){
+        contatti.sort((c1, c2) -> {
+            int cognomeComp = c1.getCognome().compareToIgnoreCase(c2.getCognome());
+            if (cognomeComp != 0) {
+                return cognomeComp;
+            }
+            return c1.getNome().compareToIgnoreCase(c2.getNome());
+        });
+    }
+       
+       public ObservableList<Contatto> getContatti(){
+           
+           return contatti;
+           
+       }
+       
 }

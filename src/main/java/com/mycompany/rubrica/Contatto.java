@@ -23,12 +23,12 @@ import javafx.beans.property.StringProperty;
  * @author obbiv
  */
 
-public class Contatto implements Comparable<Contatto>{
+public class Contatto {
     
-    private StringProperty nome; //Proprietà per il nome del contatto
-    private StringProperty cognome; //Proprietà per il cognome del contatto
-    private List<StringProperty> numeri; //Lista di stringhe del contatto
-    private List<StringProperty> email; //Lista di email del contatto
+    private String nome; //Proprietà per il nome del contatto
+    private String cognome; //Proprietà per il cognome del contatto
+    private List<String> numeri; //Lista di stringhe del contatto
+    private List<String> email; //Lista di email del contatto
     
     /**
      * Costruttore per creare un nuovo contatto con nome e cognome.
@@ -37,7 +37,7 @@ public class Contatto implements Comparable<Contatto>{
      * @param cognome il cognome del contatto
      */
     
-    public Contatto(StringProperty nome, StringProperty cognome){
+    public Contatto(String nome, String cognome){
         this.nome=nome;
         this.cognome=cognome;
         numeri=new ArrayList<>(); //Lista vuota per i numeri di telefono
@@ -50,9 +50,59 @@ public class Contatto implements Comparable<Contatto>{
      * @param numero il numero di telefono da aggiungere
      */
     
-    public void aggiungiNumero(StringProperty numero){
+    public void aggiungiNumero(String numero){
         
+        if(this.numeri.size()<3)
         numeri.add(numero);
+        //implementare Runtime exception
+    }
+    
+    public String getNome(){
+        
+        return nome;
+        
+    }
+    
+    public String getCognome(){
+        
+        return cognome;
+        
+    }
+    
+    public List<String> getNumeri(){
+        
+        return numeri;
+        
+    }
+    
+    
+    public List<String> getEmail(){
+        
+        return email;
+        
+    }
+   
+    public void setNome(String nome){
+        
+        this.nome=nome;
+        
+    }
+    
+    public void setCognome(String cognome){
+        
+        this.cognome=cognome;
+        
+    }
+    
+    public void rimuoviNumero(String numero){
+        
+        this.numeri.remove(numero);
+        
+    }
+    
+    public void rimuoviEmail(String email){
+        
+        this.email.remove(email);
         
     }
     
@@ -62,10 +112,10 @@ public class Contatto implements Comparable<Contatto>{
      * @param email l'email da aggiungere
      */
     
-    public void aggiungiEmail(StringProperty email){
-        
+    public void aggiungiEmail(String email){
+        if(this.email.size()<3)
         this.email.add(email);
-        
+        //implementare Runtime exception
     }
     
      /**
@@ -81,10 +131,10 @@ public class Contatto implements Comparable<Contatto>{
       StringBuffer bf1=new StringBuffer(); //Buffer per numeri
       StringBuffer bf2=new StringBuffer(); //Buffer per email
       
-      for(StringProperty n:numeri){ //Aggiunge numeri al buffer
+      for(String n:numeri){ //Aggiunge numeri al buffer
           bf1.append(n);
       }
-      for(StringProperty e:email){ //Aggiunge le email al buffer
+      for(String e:email){ //Aggiunge le email al buffer
           bf2.append(e);
       }
         return "Nome: "+nome+" Cognome: "+cognome+" Numeri di telefono: "+bf1.toString()+" Email: "+bf2.toString(); //Restituisce una stringa formattata
@@ -98,25 +148,5 @@ public class Contatto implements Comparable<Contatto>{
      * @return un numero negativo se il contatto corrente è "minore",
      *         zero se sono uguali, positivo se è "maggiore"
      */
-    
-  @Override
-public int compareTo(Contatto c) {
-  
-    String thisCognome = this.cognome.get(); //Ottiene il cognome del contatto corrente
-    String otherCognome = c.cognome.get(); //Ottiene il cognome del contatto da comparare
-    String thisNome = this.nome.get(); //Ottiene il nome del contatto corrente
-    String otherNome = c.nome.get(); //Ottiene il nome del contatto da comparare
-
-    if (thisCognome == null || otherCognome == null) { //Se uno dei cognomi è NULL, confronta i nomi
-        return thisNome.compareTo(otherNome);
-    }
-
-    if (thisCognome.equals(otherCognome)) { //Compara i cognomi
-        return thisNome.compareTo(otherNome); //Se i cognomi soni uguali, confronta i nomi
-    }
-
-    return thisCognome.compareTo(otherCognome); //Compara i cognomi
-}
-
     
 }
