@@ -48,7 +48,7 @@
             <TextField fx:id="email3" layoutX="225.0" layoutY="186.0" />
             <Button fx:id="aggiungiNumero" layoutX="25.0" layoutY="229.0" mnemonicParsing="false" onMouseClicked="#onAddNumero" text="Aggiungi un numero" />
             <Button fx:id="aggiungiEmail" layoutX="243.0" layoutY="229.0" mnemonicParsing="false" onMouseClicked="#onAddEmail" text="Aggiungi un'email" />
-            <Button fx:id="rimuoviNumero1" layoutX="175.0" layoutY="111.0" mnemonicParsing="false" onMouseClicked="#onRemoveNumero1" text="-" />
+            <Button fx:id="rimuoviNumero1" layoutX="170.0" layoutY="111.0" mnemonicParsing="false" onMouseClicked="#onRemoveNumero1" text="-" />
             <Button fx:id="rimuoviEmail1" layoutX="378.0" layoutY="111.0" mnemonicParsing="false" onMouseClicked="#onRemoveEmail1" text="-" />
             <Button fx:id="eliminaContatto" layoutX="135.0" layoutY="317.0" mnemonicParsing="false" onMouseClicked="#onRemoveContatto" text="Rimuovi questo contatto" />
             <Button fx:id="rimuoviNumero2" layoutX="170.0" layoutY="149.0" mnemonicParsing="false" onMouseClicked="#onRemoveNumero2" text="-" />
