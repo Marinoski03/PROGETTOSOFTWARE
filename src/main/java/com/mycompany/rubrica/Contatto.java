@@ -157,4 +157,22 @@ public class Contatto {
         }
         return "Nome: " + nome + " Cognome: " + cognome + " Numeri di telefono: " + bf1.toString() + " Email: " + bf2.toString(); 
     }
+    
+    @Override
+    public boolean equals(Object obj){
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    Contatto contatto = (Contatto) obj;
+    return (contatto.nome.equals(this.nome) && contatto.cognome.equals(this.cognome));
+    }
+    
+    @Override 
+    public int hashCode(){
+        
+        int hash = 7;
+        hash = 79 * hash + this.nome.hashCode();
+        hash = 79 * hash + this.cognome.hashCode();
+        return hash;
+        
+    }
 }

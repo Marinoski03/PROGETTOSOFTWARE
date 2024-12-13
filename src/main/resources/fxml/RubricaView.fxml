@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?> 
 <SplitPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="RubricaViewController"
+           fx:controller="com.mycompany.rubrica.RubricaViewController"
            dividerPositions="0.3">
     
     <!-- Pannello Sinistro - Lista Contatti e Controlli -->

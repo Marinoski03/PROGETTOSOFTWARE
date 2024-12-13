@@ -2,24 +2,25 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package fxml;
+package com.mycompany.rubrica;
 
 import com.mycompany.rubrica.Contatto;
-import com.mycompany.rubrica.Contatto;
+import com.mycompany.rubrica.FileManager;
+import com.mycompany.rubrica.Rubrica;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import com.mycompany.rubrica.*;
-import java.util.Optional;
-import java.util.regex.Pattern;
-import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import javafx.scene.layout.AnchorPane;
 
 /**
  * FXML Controller class
@@ -29,11 +30,13 @@ import javafx.scene.control.ButtonType;
 public class RubricaViewController implements Initializable {
 
     @FXML
-    private ListView<Contatto> listaContatti;
-    @FXML
     private TextField campoRicerca;
     @FXML
+    private ListView<Contatto> listaContatti;
+    @FXML
     private Button aggiungiContatto;
+    @FXML
+    private AnchorPane dettagliContatto;
     @FXML
     private TextField nome;
     @FXML
@@ -41,49 +44,46 @@ public class RubricaViewController implements Initializable {
     @FXML
     private TextField numero1;
     @FXML
-    private TextField numero2;
-    @FXML
-    private TextField numero3;
-    @FXML
-    private TextField email1;
-    @FXML
-    private TextField email2;
-    @FXML
-    private TextField email3;
-    @FXML
     private Button rimuoviNumero1;
-    @FXML
-    private Button rimuoviEmail1;
-    @FXML
-    private Button eliminaContatto;
-    @FXML
-    private Button rimuoviNumero2;
-    @FXML
-    private Button rimuoviNumero3;
-    @FXML
-    private Button rimuoviEmail3;
-    @FXML
-    private Button rimuoviEmail2;
-
-    /**
-     * Initializes the controller class.
-     * 
-     */
     @FXML
     private Button aggiungiNumero1;
     @FXML
+    private TextField numero2;
+    @FXML
+    private Button rimuoviNumero2;
+    @FXML
     private Button aggiungiNumero2;
     @FXML
-    private Button aggiungiEmail2;
+    private TextField numero3;
     @FXML
-    private Button aggiungiEmail3;
+    private Button rimuoviNumero3;
     @FXML
     private Button aggiungiNumero3;
     @FXML
+    private TextField email1;
+    @FXML
+    private Button rimuoviEmail1;
+    @FXML
     private Button aggiungiEmail1;
     @FXML
+    private TextField email2;
+    @FXML
+    private Button rimuoviEmail2;
+    @FXML
+    private Button aggiungiEmail2;
+    @FXML
+    private TextField email3;
+    @FXML
+    private Button rimuoviEmail3;
+    @FXML
+    private Button aggiungiEmail3;
+    @FXML
     private Button modificaContatto;
-    
+    @FXML
+    private Button salvaContatto;
+    @FXML
+    private Button eliminaContatto;
+
     private Rubrica r;
     private FileManager fm;
     private boolean addingNewContact = false;
@@ -94,27 +94,46 @@ public class RubricaViewController implements Initializable {
     private static final Pattern PHONE_PATTERN = Pattern.compile("^\\+?\\d{10,14}$");
     private static final String CONTATTI_FILE = "Contatti.txt";
     
-    @FXML
-    private Button salvaContatto;
-    
     
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        try{
-        r=fm.caricaDaFileRubrica(CONTATTI_FILE);
+public void initialize(URL url, ResourceBundle rb) {
+    try {
+        fm=new FileManager();
+        r = fm.caricaDaFileRubrica(CONTATTI_FILE);
         listaContatti.setItems(r.getContatti());
         listaContatti.setOnMouseClicked(this::onContattoSelezionato);
         
         campoRicerca.textProperty().addListener((observable, oldValue, newValue) -> filtraContatti(newValue));
         
-         toggleContactFields(false);
-         aggiungiContatto.setOnMouseClicked(event -> onStartAddContatto());
-         modificaContatto.setOnMouseClicked(event -> onStartModificaContatto());
-         } catch (Exception e) {
-            mostraErrore("Errore di inizializzazione", "Impossibile caricare i contatti: " + e.getMessage());
-        }
-    } 
+        toggleContactFields(false);
+        
+        // Aggiungi listener per i pulsanti principali
+        aggiungiContatto.setOnAction(event -> onStartAddContatto());
+        modificaContatto.setOnAction(event -> onStartModificaContatto());
+        salvaContatto.setOnAction(event -> onSalvaContatto(null));
+        //salvaContatto.setOnMouseClicked(this::onSaveContatto);
+        eliminaContatto.setOnAction(event -> onRemoveContatto(null));
+
+        // Aggiungi listener per i pulsanti di aggiunta/rimozione numeri
+        aggiungiNumero1.setOnMouseClicked(this::onAddNumero1);
+        aggiungiNumero2.setOnMouseClicked(this::onAddNumero2);
+        aggiungiNumero3.setOnMouseClicked(this::onAddNumero3);
+        rimuoviNumero1.setOnMouseClicked(this::onRemoveNumero1);
+        rimuoviNumero2.setOnMouseClicked(this::onRemoveNumero2);
+        rimuoviNumero3.setOnMouseClicked(this::onRemoveNumero3);
+
+        // Aggiungi listener per i pulsanti di aggiunta/rimozione email
+        aggiungiEmail1.setOnMouseClicked(this::onAddEmail1);
+        aggiungiEmail2.setOnMouseClicked(this::onAddEmail2);
+        aggiungiEmail3.setOnMouseClicked(this::onAddEmail3);
+        rimuoviEmail1.setOnMouseClicked(this::onRemoveEmail1);
+        rimuoviEmail2.setOnMouseClicked(this::onRemoveEmail2);
+        rimuoviEmail3.setOnMouseClicked(this::onRemoveEmail3);
+        
+    } catch (Exception e) {
+        mostraErrore("Errore di inizializzazione", "Impossibile caricare i contatti: " + e.getMessage());
+    }
+}
     
     
     
@@ -141,7 +160,7 @@ public class RubricaViewController implements Initializable {
         return numero == null || numero.isEmpty() || PHONE_PATTERN.matcher(numero).matches();
     }
      
-    private void toggleModificationFields(boolean enable) {
+   private void toggleModificationFields(boolean enable) {
     aggiungiNumero1.setVisible(enable);
     aggiungiNumero2.setVisible(enable);
     aggiungiNumero3.setVisible(enable);
@@ -178,11 +197,17 @@ public class RubricaViewController implements Initializable {
         rimuoviEmail1.setDisable(!enable);
         rimuoviEmail2.setDisable(!enable);
         rimuoviEmail3.setDisable(!enable);
-        eliminaContatto.setDisable(!enable);
+        //eliminaContatto.setDisable(!enable);
     }
+     
+     private void toggleContattoSelezionato(boolean enable){
+         modificaContatto.setDisable(!enable);
+         eliminaContatto.setDisable(!enable);
+     }
 
         private void onContattoSelezionato(MouseEvent event) {
         Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+        toggleContattoSelezionato(true);
         if (selectedContact != null) {
             nome.setText(selectedContact.getNome());
             cognome.setText(selectedContact.getCognome());
@@ -200,21 +225,33 @@ public class RubricaViewController implements Initializable {
     }
         
     private void onStartAddContatto() {
-        addingNewContact = true;
-        editingContact=false;
-        toggleContactFields(true);
+    addingNewContact = true;
+    editingContact = false;
+    toggleContactFields(true);
+    toggleContattoSelezionato(false);
 
-        // Svuota i campi per l'inserimento di un nuovo contatto
-        nome.clear();
-        cognome.clear();
-        numero1.clear();
-        numero2.clear();
-        numero3.clear();
-        email1.clear();
-        email2.clear();
-        email3.clear();
+     // Abilita specificamente i pulsanti di aggiunta
+    aggiungiNumero1.setDisable(false);
+    aggiungiNumero2.setDisable(false);
+    aggiungiNumero3.setDisable(false);
+    aggiungiEmail1.setDisable(false);
+    aggiungiEmail2.setDisable(false);
+    aggiungiEmail3.setDisable(false);
 
-        listaContatti.getSelectionModel().clearSelection();
+    // Svuota i campi
+    nome.clear();
+    cognome.clear();
+    numero1.clear();
+    numero2.clear();
+    numero3.clear();
+    email1.clear();
+    email2.clear();
+    email3.clear();
+
+    listaContatti.getSelectionModel().clearSelection();
+    
+    // Abilita il salvataggio
+    salvaContatto.setDisable(false);
     }
     
       private void onStartModificaContatto() {
@@ -223,6 +260,7 @@ public class RubricaViewController implements Initializable {
             addingNewContact = false;
             editingContact = true;
             toggleContactFields(true);
+            salvaContatto.setDisable(false);
         } else {
             mostraErrore("Errore", "Seleziona un contatto da modificare");
         }
@@ -253,7 +291,19 @@ public class RubricaViewController implements Initializable {
             aggiungiDatiContatto(newContact);
             
             r.aggiungiContatto(newContact);
-            listaContatti.getItems().add(newContact);
+            //listaContatti.getItems().add(newContact);
+            
+             try {
+            // Mostra dialogo di conferma
+            if (mostraConferma("Salvataggio Contatto", "Vuoi salvare questo contatto su file?")) {
+                // Utilizzo del metodo salvaSuFile del FileManager
+                fm.salvaSuFile(CONTATTI_FILE, newContact);
+                mostraConfermaInfo("Salvataggio Riuscito", "Contatto salvato correttamente su file");
+            }
+        } catch (Exception e) {
+            mostraErrore("Errore di Salvataggio", "Impossibile salvare il contatto: " + e.getMessage());
+        }
+            
             addingNewContact = false;
         } else if (editingContact) {
             // Modifica contatto esistente
@@ -290,18 +340,35 @@ public class RubricaViewController implements Initializable {
         if (!email3.getText().trim().isEmpty()) contatto.aggiungiEmail(email3.getText().trim());
     } 
       
-    @FXML
     private void onAddContatto(MouseEvent event) {
         if (addingNewContact) {
             Contatto newContact = new Contatto("nome", "cognome");
             newContact.setNome(nome.getText());
             newContact.setCognome(cognome.getText());
-            if (!numero1.getText().isEmpty()) newContact.getNumeri().add(numero1.getText());
-            if (!numero2.getText().isEmpty()) newContact.getNumeri().add(numero2.getText());
-            if (!numero3.getText().isEmpty()) newContact.getNumeri().add(numero3.getText());
-            if (!email1.getText().isEmpty()) newContact.getEmail().add(email1.getText());
-            if (!email2.getText().isEmpty()) newContact.getEmail().add(email2.getText());
-            if (!email3.getText().isEmpty()) newContact.getEmail().add(email3.getText());
+            if (!numero1.getText().isEmpty())
+                if(!PHONE_PATTERN.matcher(numero1.getText()).matches()){
+            mostraErrore("Errore nel formato del numero di telefono", "Inserisci un numero valido");
+            }else newContact.getNumeri().add(numero1.getText());
+            if (!numero2.getText().isEmpty())
+                 if(!PHONE_PATTERN.matcher(numero2.getText()).matches()){
+            mostraErrore("Errore nel formato del numero di telefono", "Inserisci un numero valido");
+            }else newContact.getNumeri().add(numero2.getText());
+            if (!numero3.getText().isEmpty())
+                 if(!PHONE_PATTERN.matcher(numero3.getText()).matches()){
+            mostraErrore("Errore nel formato del numero di telefono", "Inserisci un numero valido");
+            }else newContact.getNumeri().add(numero3.getText());
+            if (!email1.getText().isEmpty())
+                if(!EMAIL_PATTERN.matcher(email1.getText()).matches()){
+            mostraErrore("Errore nel formato dell'email", "Inserisci un email valida");
+            }else newContact.getEmail().add(email1.getText());
+            if (!email2.getText().isEmpty())
+                 if(!EMAIL_PATTERN.matcher(email2.getText()).matches()){
+            mostraErrore("Errore nel formato dell'email", "Inserisci un email valida");
+            }else newContact.getEmail().add(email2.getText());
+            if (!email3.getText().isEmpty())
+                 if(!EMAIL_PATTERN.matcher(email3.getText()).matches()){
+            mostraErrore("Errore nel formato dell'email", "Inserisci un email valida");
+            }else newContact.getEmail().add(email3.getText());
 
             r.aggiungiContatto(newContact);
             listaContatti.getItems().add(newContact);
@@ -310,7 +377,6 @@ public class RubricaViewController implements Initializable {
     }
 
 
-    @FXML
     private void onRemoveNumero1(MouseEvent event) {
     Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !numero1.getText().isEmpty()) {
@@ -320,7 +386,6 @@ public class RubricaViewController implements Initializable {
     }
     }
 
-    @FXML
     private void onRemoveEmail1(MouseEvent event) {
          Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email1.getText().isEmpty()) {
@@ -330,7 +395,6 @@ public class RubricaViewController implements Initializable {
     }
     }
 
-    @FXML
     private void onRemoveContatto(MouseEvent event) {
              Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
         if (selectedContact != null) {
@@ -352,7 +416,6 @@ public class RubricaViewController implements Initializable {
         }
     }
 
-    @FXML
     private void onRemoveNumero2(MouseEvent event) {
         Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !numero2.getText().isEmpty()) {
@@ -362,7 +425,6 @@ public class RubricaViewController implements Initializable {
     }
     }
 
-    @FXML
     private void onRemoveNumero3(MouseEvent event) {
         Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !numero3.getText().isEmpty()) {
@@ -372,7 +434,6 @@ public class RubricaViewController implements Initializable {
     }
     }
 
-    @FXML
     private void onRemoveEmail3(MouseEvent event) {
          Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email3.getText().isEmpty()) {
@@ -382,7 +443,6 @@ public class RubricaViewController implements Initializable {
     }
     }
 
-    @FXML
     private void onRemoveEmail2(MouseEvent event) {
          Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email2.getText().isEmpty()) {
@@ -392,67 +452,84 @@ public class RubricaViewController implements Initializable {
     }
     }
 
-    @FXML
     private void onAddNumero1(MouseEvent event) {
          Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !numero1.getText().isEmpty()) {
+        if(!PHONE_PATTERN.matcher(numero1.getText()).matches()){
+            mostraErrore("Errore nel formato del numero di telefono", "Inserisci un numero valido");
+        }else{
         selectedContact.aggiungiNumero(numero1.getText());
         numero1.clear();
         listaContatti.refresh();
+        }
     }
     }
 
-    @FXML
     private void onAddNumero2(MouseEvent event) {
          Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !numero2.getText().isEmpty()) {
+        if(!PHONE_PATTERN.matcher(numero2.getText()).matches()){
+            mostraErrore("Errore nel formato del numero di telefono", "Inserisci un numero valido");
+        }else{
         selectedContact.aggiungiNumero(numero2.getText());
         numero2.clear();
         listaContatti.refresh();
+        }
     }
     }
 
-    @FXML
     private void onAddEmail2(MouseEvent event) {
           Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email2.getText().isEmpty()) {
+        if(!EMAIL_PATTERN.matcher(email2.getText()).matches()){
+            mostraErrore("Errore nel formato dell'email", "Inserisci un email valida");
+        }else{
         selectedContact.aggiungiEmail(email2.getText());
         email2.clear();
         listaContatti.refresh();
+        }
     }
     }
 
-    @FXML
     private void onAddEmail3(MouseEvent event) {
           Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email3.getText().isEmpty()) {
+        if(!EMAIL_PATTERN.matcher(email3.getText()).matches()){
+            mostraErrore("Errore nel formato dell'email", "Inserisci un email valida");
+        }else{
         selectedContact.aggiungiEmail(email3.getText());
         email3.clear();
         listaContatti.refresh();
+        }
     }
     }
 
-    @FXML
     private void onAddNumero3(MouseEvent event) {
          Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !numero3.getText().isEmpty()) {
+        if(!PHONE_PATTERN.matcher(numero3.getText()).matches()){
+            mostraErrore("Errore nel formato del numero di telefono", "Inserisci un numero valido");
+        }else{
         selectedContact.aggiungiNumero(numero3.getText());
         numero3.clear();
         listaContatti.refresh();
+        }
     }
     }
 
-    @FXML
     private void onAddEmail1(MouseEvent event) {
           Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email1.getText().isEmpty()) {
+        if(!EMAIL_PATTERN.matcher(email1.getText()).matches()){
+            mostraErrore("Errore nel formato dell'email", "Inserisci un email valida");
+        }else{
         selectedContact.aggiungiEmail(email1.getText());
         email1.clear();
         listaContatti.refresh();
+        }
     }
     }
 
-    @FXML
     private void onModificaContatto(MouseEvent event) {
          toggleModificationFields(true);
     }
@@ -476,8 +553,7 @@ public class RubricaViewController implements Initializable {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
-    @FXML
-    private void onSaveContatto(MouseEvent event) {
+   /* private void onSaveContatto(MouseEvent event) {
         Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
         if (selectedContact == null) {
             mostraErrore("Errore", "Seleziona un contatto da salvare");
@@ -494,7 +570,7 @@ public class RubricaViewController implements Initializable {
         } catch (Exception e) {
             mostraErrore("Errore di Salvataggio", "Impossibile salvare il contatto: " + e.getMessage());
         }
-    }
+    } */
     
     private void mostraConfermaInfo(String titolo, String messaggio){
         
