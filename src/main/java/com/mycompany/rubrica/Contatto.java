@@ -24,6 +24,10 @@ public class Contatto {
     private String cognome; 
     private List<String> numeri; 
     private List<String> email; 
+    
+    
+    public Contatto(){
+    }
 
     /**
      * Costruttore della classe Contatto.
