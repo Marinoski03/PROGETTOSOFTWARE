@@ -32,7 +32,7 @@ public class FileManagerTest {
         }
     }
 
-    @Test
+  /*  @Test
     public void testSalvaSuFile() {
         Contatto contatto = new Contatto("Mario", "Rossi");
         contatto.aggiungiNumero("1234567890");
@@ -50,7 +50,7 @@ public class FileManagerTest {
         } catch (IOException e) {
             fail("Errore durante la lettura del file di test: " + e.getMessage());
         }
-    }
+    } */
 
     @Test
     public void testCaricaDaFileRubrica() {

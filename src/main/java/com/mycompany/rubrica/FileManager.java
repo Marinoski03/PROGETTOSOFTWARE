@@ -31,7 +31,7 @@ public class FileManager {
      * 
      * @param filename il nome del file su cui salvare i dati (come { @link javafx.beans.property.StringProperty })
      */
-     public void salvaSuFile(String filename, Contatto c) {
+   /*  public void salvaSuFile(String filename, Contatto c) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             // Scrive i dati del contatto in formato CSV: nome,cognome,telefoni,email
             writer.write(c.getNome() + "," + c.getCognome() + "," + 
@@ -41,7 +41,7 @@ public class FileManager {
         } catch (IOException e) {
             System.err.println("Errore durante il salvataggio del file: " + e.getMessage());
         }
-    }
+    } */
     
     /**
      * Carica un contatto da un file il cui nome è fornito come parametro.
