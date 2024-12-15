@@ -56,7 +56,7 @@ public class Rubrica {
      * @param s La stringa di ricerca, che può essere parte del nome o cognome.
      * @return Una lista di contatti che corrispondono alla ricerca.
      */
-    public ObservableList<Contatto> cercaContatto(String s){
+   /* public ObservableList<Contatto> cercaContatto(String s){
         ObservableList<Contatto> results = FXCollections.observableArrayList();
         for (Contatto contatto : contatti){
             if (contatto.getNome().toLowerCase().startsWith(s.toLowerCase()) ||
@@ -65,7 +65,7 @@ public class Rubrica {
             }
         }
         return results;
-    }
+    }*/
 
     /**
      * Ordina i contatti nella rubrica prima per cognome e poi per nome, in ordine alfabetico,
