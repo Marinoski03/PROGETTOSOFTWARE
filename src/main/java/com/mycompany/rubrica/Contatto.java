@@ -146,16 +146,9 @@ public class Contatto {
      */
     @Override
     public String toString(){
-        StringBuffer bf1 = new StringBuffer();
-        StringBuffer bf2 = new StringBuffer(); 
+   
+        return cognome + " " + nome; 
         
-        for (String n : numeri){ 
-            bf1.append(n);
-        }
-        for (String e : email){ 
-            bf2.append(e);
-        }
-        return "Nome: " + nome + " Cognome: " + cognome + " Numeri di telefono: " + bf1.toString() + " Email: " + bf2.toString(); 
     }
     
     @Override

@@ -38,16 +38,7 @@ public class Rubrica {
         ordinaContatti();
     }
 
-    /**
-     * Modifica un contatto nella rubrica.
-     * Questo metodo è attualmente non implementato, ma può essere usato per aggiornare
-     * le informazioni di un contatto esistente.
-     * 
-     * @param c Il contatto da modificare.
-     */
-    public void modificaContatto(Contatto c){
-        // Implementazione per modificare il contatto nella rubrica (non ancora implementato)
-    }
+
 
     /**
      * Elimina un contatto dalla rubrica.

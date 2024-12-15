@@ -86,5 +86,24 @@ public class FileManager {
         }
         return rubrica;
     }
+    
+    public void salvaSuFileRubrica(String filename, Rubrica rubrica) throws IOException {
+ try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+        for (Contatto contatto : rubrica.getContatti()) {
+            // Formato: Nome,Cognome,Numeri,Email
+            String numeri = contatto.getNumeri().isEmpty() ? "" : 
+                String.join(";", contatto.getNumeri());
+            String email = contatto.getEmail().isEmpty() ? "" : 
+                String.join(";", contatto.getEmail());
+            
+            writer.write(String.format("%s,%s,%s,%s\n", 
+                contatto.getNome(), 
+                contatto.getCognome(), 
+                numeri, 
+                email
+            ));
+        }
+    }
+}
 }
 

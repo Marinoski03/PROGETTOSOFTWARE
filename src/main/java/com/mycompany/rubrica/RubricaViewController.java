@@ -7,10 +7,14 @@ package com.mycompany.rubrica;
 import com.mycompany.rubrica.Contatto;
 import com.mycompany.rubrica.FileManager;
 import com.mycompany.rubrica.Rubrica;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -207,21 +211,32 @@ public void initialize(URL url, ResourceBundle rb) {
 
         private void onContattoSelezionato(MouseEvent event) {
         Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
-        toggleContattoSelezionato(true);
-        if (selectedContact != null) {
-            nome.setText(selectedContact.getNome());
-            cognome.setText(selectedContact.getCognome());
+    toggleContattoSelezionato(true);
+    
+    // Svuota prima tutti i campi
+    nome.clear();
+    cognome.clear();
+    numero1.clear();
+    numero2.clear();
+    numero3.clear();
+    email1.clear();
+    email2.clear();
+    email3.clear();
 
-            // Carica i numeri di telefono
-            if (!selectedContact.getNumeri().isEmpty()) numero1.setText(selectedContact.getNumeri().get(0));
-            if (selectedContact.getNumeri().size() > 1) numero2.setText(selectedContact.getNumeri().get(1));
-            if (selectedContact.getNumeri().size() > 2) numero3.setText(selectedContact.getNumeri().get(2));
+    if (selectedContact != null) {
+        nome.setText(selectedContact.getNome());
+        cognome.setText(selectedContact.getCognome());
 
-            // Carica le email
-            if (!selectedContact.getEmail().isEmpty()) email1.setText(selectedContact.getEmail().get(0));
-            if (selectedContact.getEmail().size() > 1) email2.setText(selectedContact.getEmail().get(1));
-            if (selectedContact.getEmail().size() > 2) email3.setText(selectedContact.getEmail().get(2));
-        }
+        // Carica i numeri di telefono
+        if (!selectedContact.getNumeri().isEmpty()) numero1.setText(selectedContact.getNumeri().get(0));
+        if (selectedContact.getNumeri().size() > 1) numero2.setText(selectedContact.getNumeri().get(1));
+        if (selectedContact.getNumeri().size() > 2) numero3.setText(selectedContact.getNumeri().get(2));
+
+        // Carica le email
+        if (!selectedContact.getEmail().isEmpty()) email1.setText(selectedContact.getEmail().get(0));
+        if (selectedContact.getEmail().size() > 1) email2.setText(selectedContact.getEmail().get(1));
+        if (selectedContact.getEmail().size() > 2) email3.setText(selectedContact.getEmail().get(2));
+    }
     }
         
     private void onStartAddContatto() {
@@ -268,7 +283,7 @@ public void initialize(URL url, ResourceBundle rb) {
     
     private void onSalvaContatto(MouseEvent event) {
         // Validazione input
-        if (nome.getText().trim().isEmpty() || cognome.getText().trim().isEmpty()) {
+        if (nome.getText().trim().isEmpty() && cognome.getText().trim().isEmpty()) {
             mostraErrore("Errore", "Nome e cognome sono obbligatori");
             return;
         }
@@ -297,7 +312,7 @@ public void initialize(URL url, ResourceBundle rb) {
             // Mostra dialogo di conferma
             if (mostraConferma("Salvataggio Contatto", "Vuoi salvare questo contatto su file?")) {
                 // Utilizzo del metodo salvaSuFile del FileManager
-                fm.salvaSuFile(CONTATTI_FILE, newContact);
+                fm.salvaSuFileRubrica(CONTATTI_FILE, r);
                 mostraConfermaInfo("Salvataggio Riuscito", "Contatto salvato correttamente su file");
             }
         } catch (Exception e) {
@@ -320,6 +335,15 @@ public void initialize(URL url, ResourceBundle rb) {
                 aggiungiDatiContatto(selectedContact);
                 
                 listaContatti.refresh();
+                 if (mostraConferma("Modifica Contatto", "Vuoi salvare le modifiche su file?")) {
+                    try {
+                        fm.salvaSuFileRubrica(CONTATTI_FILE, r);
+                    } catch (IOException e) {
+                        mostraErrore("Errore di Salvataggio", "Impossibile salvare il contatto: " + e.getMessage());
+                    }
+                    mostraConfermaInfo("Salvataggio Riuscito", "Contatto modificato correttamente");
+                }
+                
                 editingContact = false;
             }
         }
@@ -378,77 +402,118 @@ public void initialize(URL url, ResourceBundle rb) {
 
 
     private void onRemoveNumero1(MouseEvent event) {
-    Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+   Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !numero1.getText().isEmpty()) {
-        selectedContact.rimuoviNumero(numero1.getText());
+        ObservableList<String> nuoviNumeri = FXCollections.observableArrayList(selectedContact.getNumeri());
+        nuoviNumeri.remove(numero1.getText());
+        
+        selectedContact.getNumeri().clear();
+        selectedContact.getNumeri().addAll(nuoviNumeri);
+        
         numero1.clear();
         listaContatti.refresh();
+        salvareContatto();
     }
     }
 
     private void onRemoveEmail1(MouseEvent event) {
-         Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+    Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email1.getText().isEmpty()) {
-        selectedContact.rimuoviEmail(email1.getText());
+        ObservableList<String> nuoviNumeri = FXCollections.observableArrayList(selectedContact.getNumeri());
+        nuoviNumeri.remove(email1.getText());
+        
+        selectedContact.getNumeri().clear();
+        selectedContact.getNumeri().addAll(nuoviNumeri);
+        
         email1.clear();
         listaContatti.refresh();
+        salvareContatto();
     }
     }
 
     private void onRemoveContatto(MouseEvent event) {
-             Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
-        if (selectedContact != null) {
-            if (mostraConferma("Conferma Eliminazione", "Sei sicuro di voler eliminare questo contatto?")) {
-                r.eliminaContatto(selectedContact);
-                listaContatti.getItems().remove(selectedContact);
-                toggleContactFields(false);
+            Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+    if (selectedContact != null) {
+        if (mostraConferma("Conferma Eliminazione", "Sei sicuro di voler eliminare questo contatto?")) {
+            r.eliminaContatto(selectedContact);
+            listaContatti.getItems().remove(selectedContact);
+            
+            // Salva l'intera rubrica dopo l'eliminazione
+            salvareContatto();
 
-                // Svuota i campi
-                nome.clear();
-                cognome.clear();
-                numero1.clear();
-                numero2.clear();
-                numero3.clear();
-                email1.clear();
-                email2.clear();
-                email3.clear();
-            }
+            // Svuota i campi
+            nome.clear();
+            cognome.clear();
+            numero1.clear();
+            numero2.clear();
+            numero3.clear();
+            email1.clear();
+            email2.clear();
+            email3.clear();
+
+            // Disabilita i campi dopo l'eliminazione
+            toggleContactFields(false);
         }
+    }
     }
 
     private void onRemoveNumero2(MouseEvent event) {
-        Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+       Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !numero2.getText().isEmpty()) {
-        selectedContact.rimuoviNumero(numero2.getText());
+        ObservableList<String> nuoviNumeri = FXCollections.observableArrayList(selectedContact.getNumeri());
+        nuoviNumeri.remove(numero2.getText());
+        
+        selectedContact.getNumeri().clear();
+        selectedContact.getNumeri().addAll(nuoviNumeri);
+        
         numero2.clear();
         listaContatti.refresh();
+        salvareContatto();
     }
     }
 
     private void onRemoveNumero3(MouseEvent event) {
-        Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+       Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !numero3.getText().isEmpty()) {
-        selectedContact.rimuoviNumero(numero3.getText());
+        ObservableList<String> nuoviNumeri = FXCollections.observableArrayList(selectedContact.getNumeri());
+        nuoviNumeri.remove(numero3.getText());
+        
+        selectedContact.getNumeri().clear();
+        selectedContact.getNumeri().addAll(nuoviNumeri);
+        
         numero3.clear();
         listaContatti.refresh();
+        salvareContatto();
     }
     }
 
     private void onRemoveEmail3(MouseEvent event) {
-         Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+    Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email3.getText().isEmpty()) {
-        selectedContact.rimuoviEmail(email3.getText());
+        ObservableList<String> nuoviNumeri = FXCollections.observableArrayList(selectedContact.getNumeri());
+        nuoviNumeri.remove(email3.getText());
+        
+        selectedContact.getNumeri().clear();
+        selectedContact.getNumeri().addAll(nuoviNumeri);
+        
         email3.clear();
         listaContatti.refresh();
+        salvareContatto();
     }
     }
 
     private void onRemoveEmail2(MouseEvent event) {
-         Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+    Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email2.getText().isEmpty()) {
-        selectedContact.rimuoviEmail(email2.getText());
+        ObservableList<String> nuoviNumeri = FXCollections.observableArrayList(selectedContact.getNumeri());
+        nuoviNumeri.remove(email2.getText());
+        
+        selectedContact.getNumeri().clear();
+        selectedContact.getNumeri().addAll(nuoviNumeri);
+        
         email2.clear();
         listaContatti.refresh();
+        salvareContatto();
     }
     }
 
@@ -457,10 +522,18 @@ public void initialize(URL url, ResourceBundle rb) {
     if (selectedContact != null && !numero1.getText().isEmpty()) {
         if(!PHONE_PATTERN.matcher(numero1.getText()).matches()){
             mostraErrore("Errore nel formato del numero di telefono", "Inserisci un numero valido");
-        }else{
-        selectedContact.aggiungiNumero(numero1.getText());
-        numero1.clear();
-        listaContatti.refresh();
+        } else {
+            // Usa FXCollections per creare una nuova ObservableList
+            ObservableList<String> nuoviNumeri = FXCollections.observableArrayList(selectedContact.getNumeri());
+            nuoviNumeri.add(numero1.getText());
+            
+            // Sostituisci completamente la lista dei numeri
+            selectedContact.getNumeri().clear();
+            selectedContact.getNumeri().addAll(nuoviNumeri);
+            
+            //numero1.clear();
+            listaContatti.refresh();
+            salvareContatto();
         }
     }
     }
@@ -470,36 +543,56 @@ public void initialize(URL url, ResourceBundle rb) {
     if (selectedContact != null && !numero2.getText().isEmpty()) {
         if(!PHONE_PATTERN.matcher(numero2.getText()).matches()){
             mostraErrore("Errore nel formato del numero di telefono", "Inserisci un numero valido");
-        }else{
-        selectedContact.aggiungiNumero(numero2.getText());
-        numero2.clear();
-        listaContatti.refresh();
+        } else {
+            // Usa FXCollections per creare una nuova ObservableList
+            ObservableList<String> nuoviNumeri = FXCollections.observableArrayList(selectedContact.getNumeri());
+            nuoviNumeri.add(numero2.getText());
+            
+            // Sostituisci completamente la lista dei numeri
+            selectedContact.getNumeri().clear();
+            selectedContact.getNumeri().addAll(nuoviNumeri);
+            
+            //numero2.clear();
+            listaContatti.refresh();
+            salvareContatto();
         }
     }
     }
 
     private void onAddEmail2(MouseEvent event) {
-          Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+        Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email2.getText().isEmpty()) {
         if(!EMAIL_PATTERN.matcher(email2.getText()).matches()){
             mostraErrore("Errore nel formato dell'email", "Inserisci un email valida");
-        }else{
-        selectedContact.aggiungiEmail(email2.getText());
-        email2.clear();
-        listaContatti.refresh();
+        } else {
+            ObservableList<String> nuoveEmail = FXCollections.observableArrayList(selectedContact.getEmail());
+            nuoveEmail.add(email2.getText());
+            
+            selectedContact.getEmail().clear();
+            selectedContact.getEmail().addAll(nuoveEmail);
+            
+            email2.clear();
+            listaContatti.refresh();
+            salvareContatto();
         }
     }
     }
 
     private void onAddEmail3(MouseEvent event) {
-          Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+        Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email3.getText().isEmpty()) {
         if(!EMAIL_PATTERN.matcher(email3.getText()).matches()){
             mostraErrore("Errore nel formato dell'email", "Inserisci un email valida");
-        }else{
-        selectedContact.aggiungiEmail(email3.getText());
-        email3.clear();
-        listaContatti.refresh();
+        } else {
+            ObservableList<String> nuoveEmail = FXCollections.observableArrayList(selectedContact.getEmail());
+            nuoveEmail.add(email3.getText());
+            
+            selectedContact.getEmail().clear();
+            selectedContact.getEmail().addAll(nuoveEmail);
+            
+            email3.clear();
+            listaContatti.refresh();
+            salvareContatto();
         }
     }
     }
@@ -509,23 +602,37 @@ public void initialize(URL url, ResourceBundle rb) {
     if (selectedContact != null && !numero3.getText().isEmpty()) {
         if(!PHONE_PATTERN.matcher(numero3.getText()).matches()){
             mostraErrore("Errore nel formato del numero di telefono", "Inserisci un numero valido");
-        }else{
-        selectedContact.aggiungiNumero(numero3.getText());
-        numero3.clear();
-        listaContatti.refresh();
+        } else {
+            // Usa FXCollections per creare una nuova ObservableList
+            ObservableList<String> nuoviNumeri = FXCollections.observableArrayList(selectedContact.getNumeri());
+            nuoviNumeri.add(numero3.getText());
+            
+            // Sostituisci completamente la lista dei numeri
+            selectedContact.getNumeri().clear();
+            selectedContact.getNumeri().addAll(nuoviNumeri);
+            
+            //numero3.clear();
+            listaContatti.refresh();
+            salvareContatto();
         }
     }
     }
 
     private void onAddEmail1(MouseEvent event) {
-          Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
+        Contatto selectedContact = listaContatti.getSelectionModel().getSelectedItem();
     if (selectedContact != null && !email1.getText().isEmpty()) {
         if(!EMAIL_PATTERN.matcher(email1.getText()).matches()){
             mostraErrore("Errore nel formato dell'email", "Inserisci un email valida");
-        }else{
-        selectedContact.aggiungiEmail(email1.getText());
-        email1.clear();
-        listaContatti.refresh();
+        } else {
+            ObservableList<String> nuoveEmail = FXCollections.observableArrayList(selectedContact.getEmail());
+            nuoveEmail.add(email1.getText());
+            
+            selectedContact.getEmail().clear();
+            selectedContact.getEmail().addAll(nuoveEmail);
+            
+            email1.clear();
+            listaContatti.refresh();
+            salvareContatto();
         }
     }
     }
@@ -581,4 +688,13 @@ public void initialize(URL url, ResourceBundle rb) {
         alert.showAndWait();
         
     }
+    
+    private void salvareContatto() {
+    try {
+        // Salva tutti i contatti ogni volta che viene modificato qualcosa
+        fm.salvaSuFileRubrica(CONTATTI_FILE, r);
+    } catch (Exception e) {
+        mostraErrore("Errore di Salvataggio", "Impossibile salvare i contatti: " + e.getMessage());
+    }
+}
 }
