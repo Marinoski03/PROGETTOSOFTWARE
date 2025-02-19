@@ -159,13 +159,13 @@ public class Contatto {
     return (contatto.nome.equals(this.nome) && contatto.cognome.equals(this.cognome));
     }
     
-    @Override 
-    public int hashCode(){
-        
-        int hash = 7;
-        hash = 79 * hash + this.nome.hashCode();
-        hash = 79 * hash + this.cognome.hashCode();
-        return hash;
-        
-    }
+    /**@Override 
+    *public int hashCode(){
+    *   
+    *   int hash = 7;
+    *    hash = 79 * hash + this.nome.hashCode();
+    *    hash = 79 * hash + this.cognome.hashCode();
+    *    return hash;
+    *    
+    }*/
 }
