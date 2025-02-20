@@ -14,28 +14,28 @@ class ContattoTest {
 
     private Contatto contatto;
 
-    @BeforeEach //ci assicura che ogni test parta con lo stesso scenario setUp()//
+    @BeforeEach 
     void setUp() {
-        contatto = new Contatto("Mario", "Rossi"); //crea un nuovo contatto con nome Mario Rossi//
+        contatto = new Contatto("Mario", "Rossi"); 
     }
 
     @Test
     void testCostruttore() { //verifica che il costruttore di contatto inizializzi correttamente i campi 
-        assertEquals("Mario", contatto.getNome()); //verifica che il nome sia effettivamente Mario Rossi//
+        assertEquals("Mario", contatto.getNome()); 
         assertEquals("Rossi", contatto.getCognome());
-        assertTrue(contatto.getNumeri().isEmpty()); //verifica che la lista dei numeri e delle email sia vuota//
+        assertTrue(contatto.getNumeri().isEmpty()); 
         assertTrue(contatto.getEmail().isEmpty());
     }
 
     @Test
     void testAggiungiNumero() {
-        contatto.aggiungiNumero("1234567890"); //chiama il metodo aggiungi numero 3 volte//
+        contatto.aggiungiNumero("1234567890"); 
         contatto.aggiungiNumero("0987654321");
         contatto.aggiungiNumero("1122334455");
 
         List<String> numeri = contatto.getNumeri(); //recupera la lista dei numeri del contatto//
         assertEquals(3, numeri.size()); //controlla se sono esattamente 3//
-        assertTrue(numeri.contains("1234567890")); //verifica che i numeri aggiunti precedentemente siano presenti//
+        assertTrue(numeri.contains("1234567890")); 
         assertTrue(numeri.contains("0987654321"));
         assertTrue(numeri.contains("1122334455"));
 
